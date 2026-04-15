@@ -11,3 +11,8 @@
 //    5. Vytvořte novou větev (branch) "rozlouceni"
 //    6. Přidejte do souboru "rozlouceni.php" kód, který se rozloučí (např. "Sbohem, Jirko!")
 //    7. Přidejte změny do nové branch a proveďte commit s popisem, "Přidání rozloučení".
+
+
+
+
+//// + merge
