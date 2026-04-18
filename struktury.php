@@ -98,7 +98,7 @@ function prevod_jednotek(int|float $amount, $input_unit, $output_unit){
 
     return ($amount / $units[$output_unit]) * $units[$input_unit];}
 
-echo("1.2 l = ".prevod_jednotek(1.2, "l", "ml")." ml");
+echo("1.2 l = ".prevod_jednotek(1.2, "l", "ml")." ml\n\n");
 
 /// PŘÍKLAD 3. ///
 
@@ -110,6 +110,23 @@ echo("1.2 l = ".prevod_jednotek(1.2, "l", "ml")." ml");
 
 
 
+function is_prime($num){
+    if(gettype($num)!='integer'){throw new Exception("hodnota \$num musí být integer");}
+    if($num <= 1){throw new Exception("hodnota \$num musí být větší než 1");}
+
+    for($i=2; $i<$num; $i++){
+        if($num % $i ==0){return false;}}
+    return true;}
+        
+function main2(){
+    $num = 13;// <<<- vstup
+    if(is_prime($num)){
+        echo("Číslo je prvočíslo\n\n");}
+    else{
+        echo("Číslo není prvočíslo\n\n");}}
+
+main2();
+
 /// PŘÍKLAD 4. ///
 
 // Vlak jezdí každou 45 minutu v hodině. Na základě vstupní hodnoty času určete, kolik minut zbývá od posledního a do následujícího vlaku 
@@ -117,6 +134,37 @@ echo("1.2 l = ".prevod_jednotek(1.2, "l", "ml")." ml");
 // Pokud je čas validní, spočítek kolik minut zbývá do dalšího vlaku a o kolik minut ujel poslední vlak.
 // Pokud čas není validní, vypiš chybovou hlášku
 
+
+
+function train_check($time){//      $time format -> HH:MM nebo H:MM      returns ["previous", "next"]
+    $array = explode(":",$time);
+    $h = $array[0];
+    $m = $array[1];
+
+    if(is_numeric($m) === false || is_numeric($h) === false){
+        throw new Exception("hodiny a minuty musí být číslo");}
+    
+    $h = (int) $h; $m = (int) $m;
+
+    if($h>24 || $m >59){throw new Exception("neplatný formát $h:$m");}
+
+    $train_time = 45;// minutes
+
+    if($m > $train_time){
+        return [
+            "previous" => $m-$train_time,
+            "next" => 60+$train_time-$m];}
+    else{
+        return [
+            "previous" => $m-$train_time+60,
+            "next" =>$train_time-$m];}}
+
+function main3($time){
+    $ans = train_check($time);
+    echo ("vlak odjel před ".$ans["previous"]." minutami\n");
+    echo ("další vlak přijede za ".$ans["next"]." minut\n\n");}
+
+main3("10:32");
 
 
 /// PŘÍKLAD 5. ///
@@ -135,13 +183,88 @@ echo("1.2 l = ".prevod_jednotek(1.2, "l", "ml")." ml");
 
 
 
+function quadratic_echo($a, $b, $c){// nevrací, jenom dělá echo, trochu nepraktické ale splňuje zadání (lenost)
+    //
+    //  D = b² - 4ac
+    //  x1,x2 = (-b ± √(D)) / 2a
+    //
+    // $a nemůže být 0 because division by zero -> rovnice nemá x^2 takže není kvadratická
+    // $D nemůže být záporné číslo protože sqrt(-|N|) nejde v oboru R
+
+    $nums = [$a, $b, $c];
+    foreach($nums as $num){
+        if( ! in_array(gettype($num), ['integer', 'float'])){throw new Exception("\$a, \$b, \$c must all be numbers");}}
+
+    if($a == 0){echo("rovnice není kvadratická (a = 0)\n\n");return;}
+    $determinant = $b*$b - 4*$a*$c;
+
+    if($determinant < 0){echo("rovnice nemá řešení v oboru reálných čísel (d < 0)\n\n");return;}
+    if($determinant == 0){
+        $ans = (-$b) / (2*$a);
+        echo("rovnice má právě jedno řešení: x = $ans\n\n");return;}
+
+    $sqrt = sqrt($determinant);
+    $ans1 = (-$b + $sqrt) / (2*$a);
+    $ans2 = (-$b - $sqrt) / (2*$a);
+
+    echo("rovnice má dvě řešení: x1 = $ans1, x2 = $ans2\n\n");return;}
+
+quadratic_echo(-2,1,4);
+
+
+
 /// PŘÍKLAD 6. ///
-// Vytvořte program, který bude zjišťovat slevu na jízdné podle věku a stavu studenta
-// Vstupní proměnné budou věk (int) a stav studenta (bool)
+// Vytvořte program, který bude zjišťovat slevu na jízdné podle věku a stavu studenta       // stavu studenta LMAO
+// Vstupní proměnné budou věk (int) a stav studenta (bool)                                  // STATUS NE STAV 1!1!1!1
 // Podle následujících pravidel vypiš slevu:
 //    0-6 let = 100% sleva
 //    7-18 let = 50% sleva
-//    18-26 let a zároveň student = 25% sleva
+//    18-26 let a zároveň student = 25% sleva                 // co když je někomu 19 a neni student ??? musel jsem to trochu předělat vvv
 //    27-60 let = 0% sleva
 //    60+ let = 50% sleva
 // *validuj vstupy a pokud je věk menší než 0 nebo větší než 120, vypiš "Neplatný věk"
+
+
+    /* cestující : podmínka (student:1 nebo ne:0)
+    1 : 0
+    0 : 1 XXXX
+    1 : 1
+    0 : 0 */
+
+function get_sale($age, $is_student){
+    
+    try{$age = (int) $age;}
+    catch(Exception $e){throw new Exception("age must be convertable to int");}
+
+    try{$is_student = (bool) $is_student;}
+    catch(Exception $e){throw new Exception("is_student must be convertable to bool");}
+
+    if($age<0 || $age>120){
+        echo("věk musí být mezi 0 a 120 (Neplatný věk)");
+        return NAN;}
+
+    $sales = [
+    // MinAge_MaxAge_MustBeStudent => sale%
+        '0_6_0' => 100,
+        '7_18_0' => 50,
+        '19_26_1' => 25,
+        '19_60_0' => 0,
+        '60_120_0' => 50];
+
+    foreach($sales as $criteria => $amount){
+        $array_criteria = explode("_",$criteria);// [0: MinAge, 1: MaxAge, 2: MustBeStudent]
+        if($array_criteria[0] > $age || $age > $array_criteria[1]){continue;}
+        // splňuje věkove kriterium vvv
+        if($is_student == false && $array_criteria[2] == true){continue;}
+        // splňuje obě kritéria vvv
+        return $amount;}
+    return 0;}// pokud sleva není v $sales tak sleva 0%
+
+function main4(){
+    $age = 19;
+    $status_student = false;
+    $sale = get_sale($age, $status_student);
+    if (gettype($sale)=='integer'){
+        echo ("cestující ve věku $age let, který ".[true => "je", false => "není"][$status_student]." student, má nárok na slevu $sale %");}}
+
+main4();
