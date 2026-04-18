@@ -3,11 +3,9 @@ hotovo:
 - git
 - html
 - vyjimky
+- struktury
 - ..(databaze)
 - ..(form)
-
-wip:
-- struktury
 
 jeste musim dodelat:
 - soubory
