@@ -4,9 +4,9 @@ hotovo:
 - html
 - vyjimky
 - struktury
+- soubory
 - ..(databaze)
 - ..(form)
 
 jeste musim dodelat:
-- soubory
 - objekty

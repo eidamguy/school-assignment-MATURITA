@@ -16,7 +16,8 @@
 //      3;4;5;1;2 = 3
 
 // Načteme a rozbijeme obsah souboru na jednotlivé řádky
-$content = file_get_contents("znamky.csv");
+$file = "znamky.csv";
+$content = file_get_contents($file);
 $lines = explode("\n", $content);
 
 // Vytvoříme prázdné pole pro uložení výstupu
@@ -45,8 +46,6 @@ foreach ($lines as $line) {
 file_put_contents($file, implode("\n", $output));
 
 
-
-
 /// PŘÍKLAD 1. ///
 // Sestavte program který bude číst soubor formátu CSV (Comma Separated Values) a vypíše jeho obsah do html tabulky (nebo pouze pod sebe).
 // Vstupem programu bude název souboru, který bude obsahovat seznam produktů (id;name;type;price)
@@ -54,6 +53,34 @@ file_put_contents($file, implode("\n", $output));
 // Program načte soubor, a poté pro každý řádek vytvoří nový řádek v tabulce. (nezapomente na hlavičku tabulky)
 // Pokud je soubor prázdný, program vypíše "Soubor je prázdný".
 
+
+
+function main1($file_path){
+    $contents = file_get_contents($file_path);
+    if($contents == ""){
+        echo("soubor je prázdný");
+        return;}
+    
+    echo("<table>");
+    echo("
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>type</th>
+        <th>price</th>
+    </tr>");
+
+    $lines = explode("\n",$contents);
+    foreach($lines as $line){// projde řádky
+        $line = explode(";",$line);
+        echo("<tr>");
+
+        foreach($line as $char){
+            echo("<td>$char</td>");}
+        echo("</tr>");}
+    echo("</table>");}
+
+main1("produkty.csv");
 
 
 /// PŘÍKLAD 2. ///
@@ -65,9 +92,33 @@ file_put_contents($file, implode("\n", $output));
 
 
 
+function main2($path, $output_path){
+    $contents = file_get_contents($path);
+    if($contents == ""){
+        echo("soubor je prázdný");
+        return;}
+
+    $lines = explode("\n",$contents);
+    $output = [];
+
+    foreach($lines as $line){
+        $data = explode(";",$line);
+        $age = $data[1];
+
+        if($age >= 18){
+            $output[] = $line;}}
+
+    file_put_contents($output_path, implode("\n",$output));
+}
+
+main2("lide_input.csv", "lide_output.csv");
+
 /// PŘÍKLAD 3. ///
 // Vstup uživatele z formuláře budeme přidávat na konec souboru.
 // Vytvořte formulář, který bude mít pole pro jméno a příjmení.
 // Po odeslání formuláře pokud soubor neexistuje, vytvořte ho.
 // Dále se jméno a příjmení přidá na konec souboru "uzivatele.txt".
 // Nové řádky budou odděleny znakem "\n" (Linux zakončení) a jméno a příjmení budou odděleny mezerou (Jan Novák)
+
+
+// ZVLÁŠŤ V SOUBORU
