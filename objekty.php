@@ -49,6 +49,27 @@ $mojeAuto->vypsatInfo();
 
 
 
+class Film{
+    public function __construct($name, $year, $rating){
+        $this->name = $name;
+        $this->year = $year;
+        $this->rating = $rating;}
+
+    public function zmenitHodnoceni($new_rating){
+        $this->rating = $new_rating;
+    }
+
+    public function vypsatInfo(){
+        echo(
+            "jméno: ".$this->name."\n".
+            "rok vydání: ".$this->year."\n".
+            "hodnocení: ".$this->rating."/10"."\n"
+        );}
+}
+
+$film = new Film("Shrek", 2001, 5);
+$film->vypsatInfo();
+
 /// Příklad 2. ///
 
 // Vytvořte třídu "Student" s vlastnostmi "jméno", "příjmení" a "známky" (použijte zapouzdření a dodžujte zásady OOP)
@@ -57,6 +78,31 @@ $mojeAuto->vypsatInfo();
 // Vytvořte instanci třídy "Student" a zavolejte metodu "vypocitatPrumer"
 
 
+
+class Student{
+    public function __construct($name, $surname, $grades){
+        $this->name = $name;
+        $this->surname = $surname;
+        $this->grades = $grades;
+    }
+
+    public function pridatZnamku($value){
+        $this->grades[] = $value;
+    }
+
+    public function vypocitatPrumer(){
+        $total = 0;
+        foreach($this->grades as $grade){
+            $total += $grade;
+        }
+        return $total/count($this->grades);
+    }
+}
+
+
+$student = new Student("Pepa", "Novák", [3,4,2,2,2]);//     prumer 2.6
+$student->pridatZnamku(5);//                                prumer 3
+echo("průměr známek: ".$student->vypocitatPrumer()."\n");
 
 /// Příklad 3. ///
 
@@ -67,11 +113,46 @@ $mojeAuto->vypsatInfo();
 
 
 
+class Rectangle{
+    public function __construct($width, $height){
+        $this->width = $width;
+        $this->height = $height;
+    }
+
+    public function get_obvod(){
+        return 2 * ($this->width + $this->height);
+    }
+
+    public function get_obsah(){
+        return $this->width * $this->height;
+    }
+}
+
+$rect = new Rectangle(10,20);
+echo("obsah: ".$rect->get_obsah()."\n");
+echo("obvod: ".$rect->get_obvod()."\n");
+
+
+
 /// Příklad 4. ///
 // Vytvořte třídu "Kalkulacka" se statickou metodou "secti", která sečte dvě čísla
 // Vytvořte statickou metodu "odecti", která odečte dvě čísla
 // Zavolejte obě metody bez vytváření instance třídy
 
+
+
+class Calculator{
+    static function secti($a, $b){
+        return $a+$b;
+    }
+
+    static function odecti($a, $b){
+        return $a-$b;
+    }
+}
+
+echo("součet: ".Calculator::secti(12,13)."\n");
+echo("odečtení: ".Calculator::odecti(1,5)."\n");
 
 // Příklad 5. ///
 // Třída "Ukol" bude reprezentovat připomínku z úkolovníku, který umožní pracovat s daty a statusem.
@@ -84,7 +165,30 @@ $mojeAuto->vypsatInfo();
 // - nastavitVyreseno() - nastaví status na true
 
 class Ukol {
-    // Vlastnosti a metody zde...
+    public function __construct($date, $description){
+        $this->date = new DateTime($date);
+        $this->description = $description;
+        
+        $this->update_solved();
+    }
+
+    public function is_solved(){
+        $now = new DateTime('now');
+        if($this->kolikCasuZbyva() > 0){
+            return false;}
+        return true;
+    }
+
+    public function update_solved(){
+        $this->solved = false;
+        if($this->is_solved()){
+            $this->solved = true;
+        }
+    }
+
+    public function kolikCasuZbyva(){
+        return $now::diff($this->date)->days;
+    }
 }
 
 /// Příklad použití (aktuální datum např: 2025-01-01): ///
